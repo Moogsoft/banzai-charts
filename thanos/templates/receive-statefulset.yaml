@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
     app.kubernetes.io/component: receive
-{{- with .Values.receive.statefulsetLabels }}{{ toYaml . | indent 4 }}{{ end -}}
+{{ with .Values.receive.statefulsetLabels }}{{ toYaml . | indent 4 }}{{ end -}}
   {{- with .Values.receive.statefulsetAnnotations }}
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
@@ -27,7 +27,7 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: receive
   {{- with .Values.receive.statefulsetMatchLabels }}{{ toYaml . | indent 6 }}{{- end }}
-  serviceName: {{ include "thanos.name" . }}   # TODO i dont think this will work; should it be a monolith service?
+  serviceName: {{ .Release.Name }}-receive   # TODO i dont think this will work; should it be a monolith service?
   template:
     metadata:
       labels:
@@ -66,7 +66,7 @@ spec:
           {{- if .Values.receive.localEndpoint}}
           - "--receive.local-endpoint={{ .Values.receive.localEndpoint }}"
           {{- else }}
-          - "--receive.local-endpoint=$(NAME).{{ .Values.receive.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.receive.grpc.port }}"
+          - "--receive.local-endpoint=$(NAME).{{ .Release.Name }}-receive.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.receive.grpc.port }}"
           {{- end }}
           - "--label=replica=\"$(NAME)\""
           - "--label=receive=\"true\""
