@@ -1,0 +1,147 @@
+---
+{{- if and .Values.receive.enabled .Values.receive.http.ingress.enabled }}
+apiVersion: {{ .Values.receive.http.ingress.apiVersion }}
+kind: Ingress
+metadata:
+  name: {{ include "thanos.componentname" (list $ "receive") }}-http
+  labels:
+    app.kubernetes.io/name: {{ include "thanos.name" . }}
+    helm.sh/chart: {{ include "thanos.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: receive
+{{- if .Values.receive.http.ingress.labels }}
+{{ toYaml .Values.receive.http.ingress.labels | indent 4 }}
+{{- end }}
+    {{- with .Values.receive.http.ingress.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if .Values.receive.http.ingress.defaultBackend }}
+  backend:
+    serviceName: {{ include "thanos.componentname" (list $ "receive") }}-http
+    servicePort: {{ $.Values.receive.http.port }}
+  {{- end }}
+  {{- if .Values.receive.http.ingress.tls }}
+  tls:
+    {{- range .Values.receive.http.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      {{- if .secretName }}
+      secretName: {{ .secretName }}
+      {{- end}}
+    {{- end }}
+  {{- end }}
+  receives:
+  {{- range .Values.receive.http.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $.Values.receive.http.ingress.path }}
+            backend:
+              serviceName: {{ include "thanos.componentname" (list $ "receive") }}-http
+              servicePort: {{ $.Values.receive.http.port }}
+  {{- end }}
+{{- end }}
+
+{{- if and .Values.receive.enabled .Values.receive.grpc.ingress.enabled }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "thanos.componentname" (list $ "receive") }}-grpc
+  labels:
+    app.kubernetes.io/name: {{ include "thanos.name" . }}
+    helm.sh/chart: {{ include "thanos.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: receive
+{{- if .Values.receive.grpc.ingress.labels }}
+{{ toYaml .Values.receive.grpc.ingress.labels | indent 4 }}
+{{- end }}
+    {{- with .Values.receive.grpc.ingress.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if .Values.receive.grpc.ingress.defaultBackend }}
+  backend:
+    serviceName: {{ include "thanos.componentname" (list $ "receive") }}-grpc
+    servicePort: {{ $.Values.receive.grpc.port }}
+  {{- end }}
+  {{- if .Values.receive.grpc.ingress.tls }}
+  tls:
+    {{- range .Values.receive.grpc.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      {{- if .secretName }}
+      secretName: {{ .secretName }}
+      {{- end}}
+    {{- end }}
+  {{- end }}
+  rules:
+  {{- range .Values.receive.grpc.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $.Values.receive.grpc.ingress.path }}
+            backend:
+              serviceName: {{ include "thanos.componentname" (list $ "receive") }}-grpc
+              servicePort: {{ $.Values.receive.grpc.port }}
+  {{- end }}
+{{- end }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "thanos.componentname" (list $ "receive") }}-remote-write
+  labels:
+    app.kubernetes.io/name: {{ include "thanos.name" . }}
+    helm.sh/chart: {{ include "thanos.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: receive
+    {{- if .Values.receive.remoteWrite.ingress.labels }}
+    {{ toYaml .Values.receive.remoteWrite.ingress.labels | indent 4 }}
+    {{- end }}
+  {{- with .Values.receive.remoteWrite.ingress.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.receive.remoteWrite.ingress.defaultBackend }}
+  backend:
+    serviceName: {{ include "thanos.componentname" (list $ "receive") }}-remoteWrite
+    servicePort: {{ $.Values.receive.remoteWrite.port }}
+  {{- end }}
+  {{- if .Values.receive.remoteWrite.ingress.tls }}
+  tls:
+    {{- range .Values.receive.remoteWrite.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+          {{- end }}
+      {{- if .secretName }}
+      secretName: {{ .secretName }}
+    {{- end}}
+  {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.receive.remoteWrite.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $.Values.receive.remoteWrite.ingress.path }}
+            backend:
+              {{- if $.Values.receive.remoteWrite.ingress.serviceName }}
+              serviceName: {{ $.Values.receive.remoteWrite.ingress.serviceName }}
+              {{- else}}
+              serviceName: {{ include "thanos.componentname" (list $ "receive") }}-remoteWrite
+              {{- end}}
+              servicePort: {{ $.Values.receive.remoteWrite.port }}
+  {{- end }}
