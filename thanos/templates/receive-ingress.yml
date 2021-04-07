@@ -46,9 +46,8 @@ spec:
               servicePort: {{ $.Values.receive.http.port }}
   {{- end }}
 {{- end }}
-
-{{- if and .Values.receive.enabled .Values.receive.grpc.ingress.enabled }}
 ---
+{{- if and .Values.receive.enabled .Values.receive.grpc.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -96,6 +95,7 @@ spec:
   {{- end }}
 {{- end }}
 ---
+{{- if and .Values.receive.enabled .Values.receive.remoteWrite.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -145,3 +145,4 @@ spec:
               {{- end}}
               servicePort: {{ $.Values.receive.remoteWrite.port }}
   {{- end }}
+{{- end }}
