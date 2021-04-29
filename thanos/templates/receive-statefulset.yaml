@@ -136,7 +136,7 @@ spec:
       {{- with  .Values.receive.serviceAccount }}
       serviceAccountName: "{{ . }}"
       {{- end }}
-      terminationGracePeriodSeconds: 900
+      terminationGracePeriodSeconds: 10
       volumes:
       - name: config-volume
         secret:
