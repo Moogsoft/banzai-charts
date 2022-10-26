@@ -77,6 +77,10 @@ spec:
           {{- else }}
           secretName: {{ include "thanos.fullname" . }}
           {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
         {{- with .Values.bucket.securityContext }}
       securityContext: {{ toYaml . | nindent 8 }}
         {{- end }}

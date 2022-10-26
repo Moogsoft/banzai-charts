@@ -129,7 +129,7 @@ store:
       enabled: false
       # Set default backend for ingress
 
-      apiVersion: extensions/v1beta1
+      apiVersion: networking.k8s.io/v1
       # Set API version for ingress
 
       defaultBackend: false
@@ -323,7 +323,7 @@ query:
       enabled: false
       # Set default backend for ingress
 
-      apiVersion: extensions/v1beta1
+      apiVersion: networking.k8s.io/v1
       # Set API version for ingress
 
       defaultBackend: false
@@ -758,7 +758,7 @@ bucket:
       enabled: false
       # Set default backend for ingress
 
-      apiVersion: extensions/v1beta1
+      apiVersion: networking.k8s.io/v1
       # Set API version for ingress
 
       defaultBackend: false
@@ -988,7 +988,7 @@ rule:
       enabled: false
       # Set default backend for ingress
 
-      apiVersion: extensions/v1beta1
+      apiVersion: networking.k8s.io/v1
       # Set API version for ingress
 
       defaultBackend: false
@@ -1124,7 +1124,7 @@ sidecar:
       enabled: false
       # Set default backend for ingress
 
-      apiVersion: extensions/v1beta1
+      apiVersion: networking.k8s.io/v1
       # Set API version for ingress
 
       defaultBackend: false
@@ -1258,7 +1258,7 @@ receive:
       enabled: false
       # Set default backend for ingress
 
-      apiVersion: extensions/v1beta1
+      apiVersion: networking.k8s.io/v1
       # Set API version for ingress
 
       defaultBackend: false
@@ -1292,7 +1292,7 @@ receive:
       enabled: false
       # Set default backend for ingress
 
-      apiVersion: extensions/v1beta1
+      apiVersion: networking.k8s.io/v1
       # Set API version for ingress
 
       serviceName: ""

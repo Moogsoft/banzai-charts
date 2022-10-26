@@ -115,6 +115,10 @@ spec:
         readinessProbe: {{ toYaml .Values.receive.readinessProbe | nindent 8 }}
         {{- end }}
         terminationMessagePolicy: FallbackToLogsOnError
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.receive.securityContext }}
       securityContext: {{ toYaml . | nindent 8 }}
       {{- end }}
@@ -165,10 +169,10 @@ spec:
         name: data
         labels:
           app.kubernetes.io/name: {{ include "thanos.name" . }}
-          helm.sh/chart: {{ include "thanos.chart" . }}
+          helm.sh/chart: thanos-0.4.4-receive
           app.kubernetes.io/instance: {{ .Release.Name }}
           app.kubernetes.io/managed-by: {{ .Release.Service }}
-          app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+          app.kubernetes.io/version: "0.17.1"
           app.kubernetes.io/component: receive
       spec:
         accessModes:

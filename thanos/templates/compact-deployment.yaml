@@ -98,6 +98,10 @@ spec:
         configMap:
           name: {{ include "thanos.componentname" (list $ "compact") }}-relabel-configs
       {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.compact.securityContext }}
       securityContext: {{ toYaml . | nindent 8 }}
       {{- end }}

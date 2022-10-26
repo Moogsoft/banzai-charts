@@ -142,6 +142,10 @@ spec:
           defaultMode: 420
           secretName: {{ .Values.rule.certSecretName }}
       {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.rule.livenessProbe }}
       livenessProbe: {{ toYaml .Values.rule.livenessProbe | nindent 8 }}
       {{- end }}
