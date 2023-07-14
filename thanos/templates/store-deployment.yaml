@@ -182,6 +182,10 @@ spec:
         configMap:
           name: {{ include "thanos.componentname" (list $ "store") }}-relabel-configs
       {{- end }}
+      {{- with $root.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with $root.Values.store.securityContext }}
       securityContext: {{ toYaml . | nindent 8 }}
       {{- end }}

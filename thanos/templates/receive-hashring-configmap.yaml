@@ -1,0 +1,22 @@
+{{- if and .Values.receive.hashring.enabled .Values.receive.hashring.configmap.create}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "thanos.componentname" (list $ "receive") }}
+  labels:
+    app.kubernetes.io/name: {{ include "thanos.name" . }}
+    helm.sh/chart: {{ include "thanos.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: receive
+data:
+  hashrings.json: |
+    [
+        {
+            "hashring": "default",
+            "tenants": [""],
+            "endpoints": [""]
+        }
+    ]
+{{- end}}
